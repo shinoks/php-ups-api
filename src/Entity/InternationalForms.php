@@ -142,14 +142,15 @@ class InternationalForms implements NodeInterface
     private $freightCharges;
 
     /**
-     * @var bool
+     * @var OtherCharges
      */
-    private $additionalDocumentIndicator;
+    private $otherCharges;
 
     /**
-     * @var EEIFilingOption
+     * @var string $declarationStatement
      */
-    private $eeiFilingOption;
+    private $declarationStatement;
+
 
     /**
      * @return array
@@ -199,8 +200,9 @@ class InternationalForms implements NodeInterface
             if (isset($attributes->CurrencyCode)) {
                 $this->setCurrencyCode($attributes->CurrencyCode);
             }
-            if (isset($attributes->EEIFilingOption)) {
-                $this->setEEIFilingOption(new EEIFilingOption($attributes->EEIFilingOption));
+            if (isset($attributes->DeclarationStatement)) {
+                $this->setDeclarationStatement($attributes->DeclarationStatement);
+
             }
         }
     }
@@ -276,6 +278,26 @@ class InternationalForms implements NodeInterface
     }
 
     /**
+     * @param \Ups\Entity\OtherCharges $otherCharges
+     *
+     * @return $this
+     */
+    public function setOtherCharges(OtherCharges $otherCharges)
+    {
+        $this->otherCharges = $otherCharges;
+
+        return $this;
+    }
+
+    /**
+     * @return OtherCharges
+     */
+    public function getOtherCharges()
+    {
+        return $this->otherCharges;
+    }
+
+    /**
      * @param Product $product
      *
      * @return $this
@@ -335,17 +357,18 @@ class InternationalForms implements NodeInterface
         if ($this->getCurrencyCode() !== null) {
             $node->appendChild($document->createElement('CurrencyCode', $this->getCurrencyCode()));
         }
+        if ($this->getDeclarationStatement() !== null) {
+            $node->appendChild($document->createElement('DeclarationStatement', $this->getDeclarationStatement()));
+        }
         if ($this->getDiscount() !== null) {
             $node->appendChild($this->getDiscount()->toNode($document));
         }
         if ($this->getFreightCharges() !== null) {
             $node->appendChild($this->getFreightCharges()->toNode($document));
         }
-        if ($this->getAdditionalDocumentIndicator() !== null) {
-            $node->appendChild($document->createElement('AdditionalDocumentIndicator'));
-        }
-        if ($this->getEEIFilingOption() !== null) {
-            $node->appendChild($this->getEEIFilingOption()->toNode($document));
+        if ($this->getOtherCharges() !== null) {
+            $node->appendChild($this->getOtherCharges()->toNode($document));
+
         }
         foreach ($this->products as $product) {
             $node->appendChild($product->toNode($document));
@@ -523,40 +546,18 @@ class InternationalForms implements NodeInterface
     }
 
     /**
-     * @param $additionalDocumentIndicator
-     *
-     * @return $this
+     * @return string
      */
-    public function setAdditionalDocumentIndicator($additionalDocumentIndicator)
+    public function getDeclarationStatement()
     {
-        $this->additionalDocumentIndicator = $additionalDocumentIndicator;
+        return $this->declarationStatement;
     }
 
-    /**
-     * @return bool
-     */
-    public function getAdditionalDocumentIndicator()
+    public function setDeclarationStatement($statement)
     {
-        return $this->additionalDocumentIndicator;
-    }
-
-    /**
-     * @param EEIFilingOption $eeiFilingOption
-     *
-     * @return $this
-     */
-    public function setEEIFilingOption(EEIFilingOption $eeiFilingOption)
-    {
-        $this->eeiFilingOption = $eeiFilingOption;
+        $this->declarationStatement = $statement;
 
         return $this;
     }
 
-    /**
-     * @return EEIFilingOption
-     */
-    public function getEEIFilingOption()
-    {
-        return $this->eeiFilingOption;
-    }
 }
